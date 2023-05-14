@@ -15,8 +15,10 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
+    "asciiart-logo": "^0.2.7",
     "inquirer": "^8.2.4",
     "express": "^4.17.1",
+    "console.table": "^0.10.0",
     "mysql2": "^2.2.5"
   },
   "bugs": {
