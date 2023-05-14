@@ -1,0 +1,26 @@
+{
+  "name": "sql-employee-tracker-parkerbrook",
+  "version": "1.0.0",
+  "description": "Repo for Module 12 Challenge - Employee Tracker",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pbodybrooks/SQL-Employee-Tracker-ParkerBrook.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "inquirer": "^8.2.4",
+    "express": "^4.17.1",
+    "mysql2": "^2.2.5"
+  },
+  "bugs": {
+    "url": "https://github.com/pbodybrooks/SQL-Employee-Tracker-ParkerBrook/issues"
+  },
+  "homepage": "https://github.com/pbodybrooks/SQL-Employee-Tracker-ParkerBrook#readme"
+}
