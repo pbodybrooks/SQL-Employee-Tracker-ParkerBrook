@@ -20,5 +20,5 @@ const connection = mysql.createConnection({
     console.log('Connected to employee database.');
 });
 
-// export sequelize instance as a module
+// export mysql connection instance as a module for use in other files
 module.exports = connection;
