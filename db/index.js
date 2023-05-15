@@ -1,5 +1,6 @@
-
-
+const index = require("../index");
+const connection = require("../config/connection");
+const consoleTable = require("console.table");
 
 function dbOperations(data) {
     switch (data.userChoice) {
@@ -48,11 +49,11 @@ function dbOperations(data) {
     }
 }
 
-//Generate a function that will display all departments
+
 function viewAllDepartments() {
     connection.query("SELECT * FROM department", function (err, res) {
         if (err) throw err;
         console.table(res);
-        init();
+        index.init();
     });
 };

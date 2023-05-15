@@ -29,9 +29,7 @@ const userPrompts = [
 ];
 
 // renders splashscreen logo and initializes inquirer to prompt the user for a database action
-function init() {
-    renderASCIILogo();
-
+function runDBOps() {
     inquirer.prompt(userPrompts).then(data => {
         dbOperations(data.userChoice);
     });
@@ -59,5 +57,12 @@ function renderASCIILogo() {
     .render());
 };
 
+function init() {
+    renderASCIILogo();
+    runDBOps();
+};
+
 // function call to initialize program
 init();
+
+exports.runDBOps = runDBOps;
