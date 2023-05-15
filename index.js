@@ -36,7 +36,7 @@ function promptOps() {
 };
 
 // utilizes the asciiart-logo package to render a splashscreen in the console
-function renderASCIILogo() {
+function renderWelcomeScreen() {
     const welcomeMessage = "Welcome to the Employee Management System! This application features an interface that allows you to view and manage the departments, roles, and employees in your company. To begin, simply select an action below and follow the prompts. Enjoy!"
 
     console.log(logo({ 
@@ -59,7 +59,7 @@ function renderASCIILogo() {
 
 // calls both the splashscreen logo and prompts for user input
 function init() {
-    renderASCIILogo();
+    renderWelcomeScreen();
     promptOps();
 };
 
