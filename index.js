@@ -1,9 +1,9 @@
+// import dependencies
 const inquirer = require('inquirer');
-
 const logo = require('asciiart-logo');
-const e = require('express');
 
 
+// prompts for user to select a database action
 const userPrompts = [
     {
         type: 'list',
