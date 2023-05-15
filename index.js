@@ -28,20 +28,12 @@ const userPrompts = [
     }
 ];
 
-// renders splashscreen logo and initializes inquirer to prompt the user for a database action
+// initializes inquirer to prompt the user for a database action, feeds response into dbOperations function
 function promptOps() {
     inquirer.prompt(userPrompts).then(data => {
         dbOperations(data.userChoice);
     });
-        
-
 };
-
-// function promptOps() {
-//     inquirer.prompt(userPrompts).then(data => {
-//         dbOperations(data.userChoice);
-//     });
-// };
 
 // utilizes the asciiart-logo package to render a splashscreen in the console
 function renderASCIILogo() {
@@ -65,6 +57,7 @@ function renderASCIILogo() {
     .render());
 };
 
+// calls both the splashscreen logo and prompts for user input
 function init() {
     renderASCIILogo();
     promptOps();

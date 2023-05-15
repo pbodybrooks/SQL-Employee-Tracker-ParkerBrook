@@ -1,7 +1,13 @@
+// import dependencies
 const inquirer = require("inquirer");
 const run = require("../index");
 const connection = require("../config/connection");
 const consoleTable = require("console.table");
+
+// TEST CONNECTION
+// const connection = require('./config/connection.js');
+// connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) { if (error) throw error; console.log('The solution is: ', results[0].solution); });
+
 
 function dbOperations(operation) {
     switch (operation) {
@@ -50,7 +56,6 @@ function dbOperations(operation) {
     }
 }
 
-
 function viewAllDepartments() {
     connection.query("SELECT * FROM department", function (err, res) {
         if (err) throw err;
@@ -74,6 +79,8 @@ function viewAllEmployees() {
         run.promptOps();
     });
 }
+
+
 
 
 

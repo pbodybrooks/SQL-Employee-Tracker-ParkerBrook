@@ -2,7 +2,7 @@
 const mysql = require('mysql2');
 // load environment variables from .env file
 require('dotenv').config();
-console.log(process.env) // remove this after you've confirmed it is working
+// console.log(process.env);
 
 // use environment variables in .env to connect to database
 const connection = mysql.createConnection({
@@ -12,12 +12,12 @@ const connection = mysql.createConnection({
     database: process.env.DB_NAME
     });
   
-  connection.connect((err) => {
-    if (err) {
-      console.error('Error connecting to database: ', err);
-      return;
-    }
-    console.log('Connected to employee database.');
+    connection.connect((err) => {
+        if (err) {
+        console.error('Error connecting to database: ', err);
+        return;
+        }
+    console.log('\nConnected to employee database.');
 });
 
 // export mysql connection instance as a module for use in other files
