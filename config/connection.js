@@ -1,22 +1,24 @@
-// import sequelize library 
-const Sequelize = require('sequelize');
-
+// import mysql module 
+const mysql = require('mysql2');
 // load environment variables from .env file
 require('dotenv').config();
 console.log(process.env) // remove this after you've confirmed it is working
 
 // use environment variables in .env to connect to database
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
+const connection = mysql.createConnection({
     host: 'localhost',
-    dialect: 'mysql',
-    port: 3306
-  },
-  console.log("connected to employee database.")
-);
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
+    });
+  
+  connection.connect((err) => {
+    if (err) {
+      console.error('Error connecting to database: ', err);
+      return;
+    }
+    console.log('Connected to employee database.');
+});
 
 // export sequelize instance as a module
-module.exports = sequelize;
+module.exports = connection;

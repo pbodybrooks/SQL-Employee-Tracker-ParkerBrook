@@ -1,3 +1,6 @@
+
+
+
 function dbOperations(data) {
     switch (data.userChoice) {
         case "View All Departments":
@@ -44,3 +47,12 @@ function dbOperations(data) {
             break;
     }
 }
+
+//Generate a function that will display all departments
+function viewAllDepartments() {
+    connection.query("SELECT * FROM department", function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        init();
+    });
+};
