@@ -1,4 +1,4 @@
-const index = require("../index");
+const promptOps = require("../index");
 const connection = require("../config/connection");
 const consoleTable = require("console.table");
 
@@ -54,6 +54,6 @@ function viewAllDepartments() {
     connection.query("SELECT * FROM department", function (err, res) {
         if (err) throw err;
         console.table(res);
-        index.init();
+        promptOps.init();
     });
 };
