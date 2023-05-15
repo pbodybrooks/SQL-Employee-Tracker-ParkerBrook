@@ -1,9 +1,10 @@
-const promptOps = require("../index");
+const inquirer = require("inquirer");
+const run = require("../index");
 const connection = require("../config/connection");
 const consoleTable = require("console.table");
 
-function dbOperations(data) {
-    switch (data.userChoice) {
+function dbOperations(operation) {
+    switch (operation) {
         case "View All Departments":
             viewAllDepartments();
             break;
@@ -54,7 +55,7 @@ function viewAllDepartments() {
     connection.query("SELECT * FROM department", function (err, res) {
         if (err) throw err;
         console.table(res);
-        promptOps.init();
+        run.promptOps();
     });
 }
 
@@ -62,7 +63,7 @@ function viewAllRoles() {
     connection.query("SELECT * FROM role", function (err, res) {
         if (err) throw err;
         console.table(res);
-        promptOps.init();
+        run.promptOps();
     });
 }
 
@@ -70,6 +71,10 @@ function viewAllEmployees() {
     connection.query("SELECT * FROM employee", function (err, res) {
         if (err) throw err;
         console.table(res);
-        promptOps.init();
+        run.promptOps();
     });
 }
+
+
+
+module.exports = dbOperations;

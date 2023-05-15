@@ -1,7 +1,7 @@
 // import dependencies
 const inquirer = require('inquirer');
 const logo = require('asciiart-logo');
-
+const dbOperations = require('./db/index');
 
 // prompts for user to select a database action
 const userPrompts = [
@@ -33,7 +33,15 @@ function promptOps() {
     inquirer.prompt(userPrompts).then(data => {
         dbOperations(data.userChoice);
     });
+        
+
 };
+
+// function promptOps() {
+//     inquirer.prompt(userPrompts).then(data => {
+//         dbOperations(data.userChoice);
+//     });
+// };
 
 // utilizes the asciiart-logo package to render a splashscreen in the console
 function renderASCIILogo() {
