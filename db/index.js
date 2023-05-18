@@ -214,10 +214,13 @@ function addEmployee() {
             choices: managerSelection
         }
     ]).then(function (answer) {
-        // circle back to this once decided if I want to use manager name or manager id
-        connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [answer.firstName, answer.lastName, answer.role, answer.manager], function (err, res) {
+        roleID = roleSelection.indexOf(answer.role) + 1;
+        managerID = managerSelection.indexOf(answer.manager) + 1;
+
+        connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [answer.firstName, answer.lastName, roleID, managerID], function (err, res) {
             if (err) throw err;
-            console.log("Employee added successfully!");
+            console.log(`Added ${answer.firstName} ${answer.lastName} to the database with the role of ${answer.role}.\n${answer.firstName} will report to ${answer.manager}.`);
+            fillSelectionArrays();
             run.promptOps();
         });
     });
