@@ -126,15 +126,49 @@ function addRole() {
     });
 }
 
+function addEmployee() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "firstName",
+            message: "Please enter the employee's first name:"
+        },
+        {
+            type: "input",
+            name: "lastName",
+            message: "Please enter the employee's last name:"
+        },
+        {
+            type: "list",
+            name: "role",
+            // circle back to this once decided if I want to use role name or role id
+            message: "Please select the role for this employee:",
+            choices: roleSelection
+        },
+        {
+            type: "list",
+            name: "manager",
+            message: "Please select the name of the manager this employee will report to:",
+            choices: managerSelection
+        }
+    ]).then(function (answer) {
+        // circle back to this once decided if I want to use manager name or manager id
+        connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [answer.firstName, answer.lastName, answer.role, answer.manager], function (err, res) {
+            if (err) throw err;
+            console.log("Employee added successfully!");
+            run.promptOps();
+        });
+    });
+}
+
+
+
+
 // case "Add a Role":
 //     addRole();
 //     break;
-// case "Add an Employee":
-//     addEmployee();
-//     break;
-// case "Update an Employee's Role":
-//     updateEmployeeRole();
-//     break;
+
+
 // case "Update an Employee's Manager":
 //     updateEmployeeManager();
 //     break;
@@ -162,7 +196,6 @@ function quit() {
     connection.end();
     process.exit();
 }
-
 
 function renderExitScreen() {
     const goodbyeMessage = "Thank you for using the Employee Management System! To begin a new session, please run 'npm start' in your terminal."
