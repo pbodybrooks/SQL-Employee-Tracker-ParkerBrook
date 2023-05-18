@@ -76,53 +76,177 @@ function fillSelectionArrays() {
     // });
 }
 
+function quitPrompt(input) {
+    if (input.toLowerCase() === 'quit') {
+        // Exit the program if 'quit' is entered
+        process.exit();
+    }
+    // Continue with the prompt
+    return true;
+}
+
 function dbOperations(operation) {
-    // fillSelectionArrays();
+    // switch (operation) {
+    //     case "View All Departments":
+    //         viewAllDepartments();
+    //         break;
+    //     case "View All Roles":
+    //         viewAllRoles();
+    //         break;
+    //     case "View All Employees":
+    //         viewAllEmployees();
+    //         break;
+    //     case "Add a Department":
+    //         addDepartment(operation);
+    //         break;
+    //     case "Add a Role":
+    //         addRole(operation);
+    //         break;
+    //     case "Add an Employee":
+    //         addEmployee(operation);
+    //         break;
+    //     case "Update an Employee's Role":
+    //         updateEmployeeRole(operation);
+    //         break;
+    //     case "Update an Employee's Manager":
+    //         updateEmployeeManager(operation);
+    //         break;
+    //     case "View Employees by Manager":
+    //         viewEmployeesByManager();
+    //         break;
+    //     case "View Employees by Department":
+    //         viewEmployeesByDepartment();
+    //         break;
+    //     case "Delete a Department":
+    //         deleteDepartment(operation);
+    //         break;
+    //     case "Delete a Role":
+    //         deleteRole(operation);
+    //         break;
+    //     case "Delete an Employee":
+    //         deleteEmployee(operation);
+    //         break;
+    //     case "Quit":
+    //         quit();
+    //         break;
+    // }
 
     switch (operation) {
-        case "View All Departments":
-            viewAllDepartments();
+        case "View":
+            viewOperations();
             break;
-        case "View All Roles":
-            viewAllRoles();
+        case "Add":
+            addOperations(operation);
             break;
-        case "View All Employees":
-            viewAllEmployees();
+        case "Update":
+            updateOperations(operation);
             break;
-        case "Add a Department":
-            addDepartment(operation);
-            break;
-        case "Add a Role":
-            addRole(operation);
-            break;
-        case "Add an Employee":
-            addEmployee(operation);
-            break;
-        case "Update an Employee's Role":
-            updateEmployeeRole(operation);
-            break;
-        case "Update an Employee's Manager":
-            updateEmployeeManager(operation);
-            break;
-        case "View Employees by Manager":
-            viewEmployeesByManager();
-            break;
-        case "View Employees by Department":
-            viewEmployeesByDepartment();
-            break;
-        case "Delete a Department":
-            deleteDepartment(operation);
-            break;
-        case "Delete a Role":
-            deleteRole(operation);
-            break;
-        case "Delete an Employee":
-            deleteEmployee(operation);
+        case "Delete":
+            deleteOperations(operation);
             break;
         case "Quit":
             quit();
             break;
     }
+}
+
+function viewOperations() {
+    inquirer.prompt({
+        name: "view",
+        type: "list",
+        message: "What would you like to view?",
+        choices: ["View All Departments", "View All Roles", "View All Employees", "View Employees by Manager", "View Employees by Department", "← Back"]
+    }).then(function (answer) {
+        switch (answer.view) {
+            case "View All Departments":
+                viewAllDepartments();
+                break;
+            case "View All Roles":
+                viewAllRoles();
+                break;
+            case "View All Employees":
+                viewAllEmployees();
+                break;
+            case "View Employees by Manager":
+                viewEmployeesByManager();
+                break;
+            case "View Employees by Department":
+                viewEmployeesByDepartment();
+                break;
+            case "← Back":
+                run.promptOps();
+                break;
+        }
+    });
+}
+
+function addOperations(operation) {
+    inquirer.prompt({
+        name: "add",
+        type: "list",
+        message: "What would you like to add?",
+        choices: ["Add a Department", "Add a Role", "Add an Employee", "← Back"]
+    }).then(function (answer) {
+        switch (answer.add) {
+            case "Add a Department":
+                addDepartment(operation);
+                break;
+            case "Add a Role":
+                addRole(operation);
+                break;
+            case "Add an Employee":
+                addEmployee(operation);
+                break;
+            case "← Back":
+                run.promptOps();
+                break;
+        }
+    });
+}
+
+function updateOperations(operation) {
+    inquirer.prompt({
+        name: "update",
+        type: "list",
+        message: "What would you like to update?",
+        choices: ["Update an Employee's Role", "Update an Employee's Manager", "← Back"]
+    }).then(function (answer) {
+        switch (answer.update) {
+            case "Update an Employee's Role":
+                updateEmployeeRole(operation);
+                break;
+            case "Update an Employee's Manager":
+                updateEmployeeManager(operation);
+                break;
+            case "← Back":
+                run.promptOps();
+                break;
+        }
+    });
+}
+
+function deleteOperations(operation) {
+    inquirer.prompt({
+        name: "delete",
+        type: "list",
+        message: "What would you like to delete?",
+        choices: ["Delete a Department", "Delete a Role", "Delete an Employee", "← Back"]
+    }).then(function (answer) {
+        switch (answer.delete) {
+            case "Delete a Department":
+                deleteDepartment(operation);
+                break;
+            case "Delete a Role":
+                deleteRole(operation);
+                break;
+            case "Delete an Employee":
+                deleteEmployee(operation);
+                break;
+            case "← Back":
+                run.promptOps();
+                break;
+        }
+    });
 }
 
 function viewAllDepartments() {
@@ -157,7 +281,7 @@ function addDepartment(operation) {
     }).then(function (answer) {
         connection.query("INSERT INTO department (department_name) VALUES (?)", [answer.department], function (err, res) {
             if (err) throw err;
-            let successMsg = `${answer.department} added to departments database.`;
+            let successMsg = `${answer.department} has been added to department database.`;
             logSuccessfulOperation(operation, successMsg);
             run.promptOps();
         });
@@ -169,23 +293,26 @@ function addRole(operation) {
         {
             type: "input",
             name: "role",            
-            message: "Please enter the name of the role you wish to add:"
+            message: "Please enter the name of the role you wish to add. [Enter 'quit' to exit]",
+            validate: (input) => quitPrompt(input)
         },
         {
             type: "input",
             name: "salary",
-            message: "Please enter the salary for this role:"
+            message: "Please enter the salary for this role. [Enter 'quit' to exit]",
+            validate: (input) => quitPrompt(input)
         },
         {
             type: "list",
             name: "department",
-            message: "Please enter the department ID for this role:",
-            choices: departmentSelection
+            message: "Please enter the department ID for this role. [Enter 'quit' to exit]",
+            choices: departmentSelection,
+            validate: (input) => quitPrompt(input)
         }
     ]).then(function (answer) {
         connection.query("INSERT INTO role (role_title, salary, department_id) VALUES (?, ?, ?)", [answer.role, answer.salary, answer.department], function (err, res) {
             if (err) throw err;
-            let successMsg = `${answer.role} added to roles database.`;
+            let successMsg = `${answer.role} has been added to role database.`;
             logSuccessfulOperation(operation, successMsg);
             run.promptOps();
         });
@@ -207,7 +334,6 @@ function addEmployee(operation) {
         {
             type: "list",
             name: "role",
-            // circle back to this once decided if I want to use role name or role id
             message: "Please select the role for this employee:",
             choices: roleSelection
         },
@@ -231,7 +357,7 @@ function addEmployee(operation) {
     });
 }
 
-function updateEmployeeRole() {
+function updateEmployeeRole(operation) {
     inquirer.prompt([
         {
             type: "list",
@@ -255,7 +381,7 @@ function updateEmployeeRole() {
     });
 }
 
-function updateEmployeeManager() {
+function updateEmployeeManager(operation) {
     inquirer.prompt([
         {
             type: "list",
@@ -279,17 +405,77 @@ function updateEmployeeManager() {
     });
 }
 
+function viewEmployeesByManager() {
+    inquirer.prompt({
+        name: "manager",
+        type: "list",
+        message: "Please select the manager whose direct reports you wish to view:",
+        choices: managerSelection
+    }).then(function (answer) {
+        managerID = managerSelection.indexOf(answer.manager) + 1;
 
+        connection.query("SELECT * FROM employee WHERE manager_id = ?", [managerID], function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            run.promptOps();
+        });
+    });
+}
 
-// function viewEmployeesByManager
+function viewEmployeesByDepartment() {
+    inquirer.prompt({
+        name: "department",
+        type: "list",
+        message: "Please select the department in which you wish to view employees:",
+        choices: departmentSelection
+    }).then(function (answer) {
+        departmentID = departmentSelection.indexOf(answer.department) + 1;
 
-// function viewEmployeesByDepartment
+        connection.query("SELECT * FROM employee WHERE department_id = ?", [departmentID], function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            run.promptOps();
+        });
+    });
+}
 
-// function deleteDepartment
+function deleteDepartment(operation) {
+    inquirer.prompt({
+        name: "department",
+        type: "list",
+        message: "Please select the name of the department you wish to delete:",
+        choices: departmentSelection
+    }).then(function (answer) {
+        departmentID = departmentSelection.indexOf(answer.department) + 1;
 
-// function deleteRole
+        connection.query("DELETE FROM department WHERE id = ?", [departmentID], function (err, res) {
+            if (err) throw err;
+            const successMsg = `${answer.department} has been removed from the department database.\n`;
+            logSuccessfulOperation(operation, successMsg);
+            run.promptOps();
+        });
+    });
+}
 
-function deleteEmployee() {
+function deleteRole(operation) {
+    inquirer.prompt({
+        name: "role",
+        type: "list",
+        message: "Please select the name of the role you wish to delete:",
+        choices: roleSelection
+    }).then(function (answer) {
+        roleID = roleSelection.indexOf(answer.role) + 1;
+
+        connection.query("DELETE FROM role WHERE id = ?", [roleID], function (err, res) {
+            if (err) throw err;
+            const successMsg = `${answer.role} has been removed from the role database.\n`;
+            logSuccessfulOperation(operation, successMsg);
+            run.promptOps();
+        });
+    });
+}
+
+function deleteEmployee(operation) {
     inquirer.prompt({
         name: "employee",
         type: "list",
@@ -300,13 +486,12 @@ function deleteEmployee() {
 
         connection.query("DELETE FROM employee WHERE id = ?", [employeeID], function (err, res) {
             if (err) throw err;
-            const successMsg = `{answer.employee} has been removed from the database.\n`);
+            const successMsg = `${answer.employee} has been removed from the department database.\n`;
             logSuccessfulOperation(operation, successMsg);
             run.promptOps();
         });
     });
 }
-
 
 function quit() {
     renderExitScreen();
@@ -336,4 +521,3 @@ function renderExitScreen() {
 };
 
 module.exports = {dbOperations, fillSelectionArrays};
-// module.exports = dbOperations;
