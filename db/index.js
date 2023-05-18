@@ -14,7 +14,69 @@ let roleSelection = [];
 let employeeSelection = [];
 let managerSelection = [];
 
+// fill the selection arrays from the database
+function fillSelectionArrays() {
+    connection.query("SELECT * FROM department", function (err, res) {
+        if (err) throw err;
+        const uniqueDepartments = new Set(res.map(item => item.department_name));
+        departmentSelection = [...uniqueDepartments];
+    });
+
+    connection.query("SELECT * FROM role", function (err, res) {
+        if (err) throw err;
+        const uniqueRoles = new Set(res.map(item => item.role_title));
+        roleSelection = [...uniqueRoles];
+    });
+
+    connection.query("SELECT * FROM employee", function (err, res) {
+        if (err) throw err;
+        const uniqueEmployees = new Set(res.map(item => item.first_name + " " + item.last_name));
+        employeeSelection = [...uniqueEmployees];
+    });
+
+    connection.query("SELECT * FROM employee WHERE manager_id IS NULL", function (err, res) {
+        if (err) throw err;
+        const uniqueManagers = new Set(res.map(item => item.first_name + " " + item.last_name));
+        managerSelection = [...uniqueManagers];
+    });
+    // console.log(departmentSelection);
+    // console.log(roleSelection);
+    // console.log(employeeSelection);
+    // console.log(managerSelection);
+
+       // connection.query("SELECT * FROM department", function (err, res) {
+    //     if (err) throw err;
+    //     for (let i = 0; i < res.length; i++) {
+    //         departmentSelection.push(res[i].department_name);
+    //     }
+    // });
+    // connection.query("SELECT * FROM role", function (err, res) {
+    //     if (err) throw err;
+    //     for (let i = 0; i < res.length; i++) {
+    //         roleSelection.push(res[i].role_title);
+    //     }
+    // });
+    // connection.query("SELECT * FROM employee", function (err, res) {
+    //     if (err) throw err;
+    //     for (let i = 0; i < res.length; i++) {
+    //         employeeSelection.push(res[i].first_name + " " + res[i].last_name);
+    //     }
+    // });
+    // connection.query("SELECT * FROM employee WHERE manager_id IS NULL", function (err, res) {
+    //     if (err) throw err;
+    //     for (let i = 0; i < res.length; i++) {
+    //         managerSelection.push(res[i].first_name + " " + res[i].last_name);
+    //     }
+    // });
+}
+
 function dbOperations(operation) {
+    fillSelectionArrays();
+    // console.log(departmentSelection);
+    // console.log(roleSelection);
+    // console.log(employeeSelection);
+    // console.log(managerSelection);
+
     switch (operation) {
         case "View All Departments":
             viewAllDepartments();
@@ -218,4 +280,5 @@ function renderExitScreen() {
     .render());
 };
 
-module.exports = dbOperations;
+module.exports = {dbOperations, fillSelectionArrays};
+// module.exports = dbOperations;

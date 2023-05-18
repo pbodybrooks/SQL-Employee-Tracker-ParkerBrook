@@ -1,7 +1,7 @@
 // import dependencies
 const inquirer = require('inquirer');
 const logo = require('asciiart-logo');
-const dbOperations = require('./db/index');
+const { dbOperations, fillSelectionArrays } = require('./db/index');
 
 // prompts for user to select a database action
 const userPrompts = [
@@ -60,6 +60,7 @@ function renderWelcomeScreen() {
 // calls both the splashscreen logo and prompts for user input
 function init() {
     renderWelcomeScreen();
+    fillSelectionArrays();
     promptOps();
 };
 
