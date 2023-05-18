@@ -28,8 +28,10 @@ const userPrompts = [
     }
 ];
 
-// initializes inquirer to prompt the user for a database action, feeds response into dbOperations function
+// updates selection arrays, initializes inquirer to prompt the user for a database action, and feeds response into dbOperations function
 function promptOps() {
+    fillSelectionArrays();
+
     inquirer.prompt(userPrompts).then(data => {
         dbOperations(data.userChoice);
     });

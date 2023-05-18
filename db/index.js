@@ -14,6 +14,12 @@ let roleSelection = [];
 let employeeSelection = [];
 let managerSelection = [];
 
+function logSuccessfulOperation(operation, successMsg) {
+    if (operation !== "Quit" || "View All Departments" || "View All Roles" || "View All Employees" || "View Employees by Manager" || "View Employees by Department") {
+        console.log('\x1b[32;1m%s\x1b[0m', `\n//////////////////////////////// Operation "${operation}" was completed successfully. ////////////////////////////////\n\n${successMsg}\n\n//////////////////////////////// Operation "${operation}" was completed successfully. ////////////////////////////////\n`);
+    }
+}
+
 // fill the selection arrays from the database
 function fillSelectionArrays() {
     connection.query("SELECT * FROM department", function (err, res) {
@@ -71,11 +77,7 @@ function fillSelectionArrays() {
 }
 
 function dbOperations(operation) {
-    fillSelectionArrays();
-    // console.log(departmentSelection);
-    // console.log(roleSelection);
-    // console.log(employeeSelection);
-    // console.log(managerSelection);
+    // fillSelectionArrays();
 
     switch (operation) {
         case "View All Departments":
@@ -94,7 +96,7 @@ function dbOperations(operation) {
             addRole();
             break;
         case "Add an Employee":
-            addEmployee();
+            addEmployee(operation);
             break;
         case "Update an Employee's Role":
             updateEmployeeRole();
@@ -188,7 +190,7 @@ function addRole() {
     });
 }
 
-function addEmployee() {
+function addEmployee(operation) {
     inquirer.prompt([
         {
             type: "input",
@@ -219,8 +221,55 @@ function addEmployee() {
 
         connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [answer.firstName, answer.lastName, roleID, managerID], function (err, res) {
             if (err) throw err;
-            console.log(`Added ${answer.firstName} ${answer.lastName} to the database with the role of ${answer.role}.\n${answer.firstName} will report to ${answer.manager}.`);
-            fillSelectionArrays();
+            const successMsg = `${answer.firstName} ${answer.lastName} has been added to the database with the role of ${answer.role}.\n${answer.firstName} will report to ${answer.manager}.`;
+            logSuccessfulOperation(operation, successMsg);
+            // fillSelectionArrays();
+            run.promptOps();
+        });
+    });
+}
+
+function updateEmployeeRole() {
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "employee",
+            message: "Please select the name of the employee whose role you wish to update:",
+            choices: employeeSelection
+        },
+        {
+            type: "list",
+            name: "role",
+            message: "Please select the new role for this employee:",
+            choices: roleSelection
+        }
+    ]).then(function (answer) {
+        connection.query("UPDATE employee SET role_id = ? WHERE id = ?", [answer.role, answer.employee], function (err, res) {
+            if (err) throw err;
+            console.log("Employee role updated successfully!");
+            run.promptOps();
+        });
+    });
+}
+
+function updateEmployeeManager() {
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "employee",
+            message: "Please select the name of the employee whose manager you wish to update:",
+            choices: employeeSelection
+        },
+        {
+            type: "list",
+            name: "manager",
+            message: "Please select the new manager for this employee:",
+            choices: managerSelection
+        }
+    ]).then(function (answer) {
+        connection.query("UPDATE employee SET manager_id = ? WHERE id = ?", [answer.manager, answer.employee], function (err, res) {
+            if (err) throw err;
+            console.log("Employee manager updated successfully!");
             run.promptOps();
         });
     });
@@ -228,33 +277,32 @@ function addEmployee() {
 
 
 
+// function viewEmployeesByManager
 
-// case "Add a Role":
-//     addRole();
-//     break;
+// function viewEmployeesByDepartment
 
+// function deleteDepartment
 
-// case "Update an Employee's Manager":
-//     updateEmployeeManager();
-//     break;
-// case "View Employees by Manager":
-//     viewEmployeesByManager();
-//     break;
-// case "View Employees by Department":
-//     viewEmployeesByDepartment();
-//     break;
-// case "Delete a Department":
-//     deleteDepartment();
-//     break;
-// case "Delete a Role":
-//     deleteRole();
-//     break;
-// case "Delete an Employee":
-//     deleteEmployee();
-//     break;
-// case "Quit":
-//     quit();
-//     break;
+// function deleteRole
+
+function deleteEmployee() {
+    inquirer.prompt({
+        name: "employee",
+        type: "list",
+        message: "Please select the name of the employee you wish to delete:",
+        choices: employeeSelection
+    }).then(function (answer) {
+        employeeID = employeeSelection.indexOf(answer.employee) + 1;
+
+        connection.query("DELETE FROM employee WHERE id = ?", [employeeID], function (err, res) {
+            if (err) throw err;
+            const successMsg = `{answer.employee} has been removed from the database.\n`);
+            logSuccessfulOperation(operation, successMsg);
+            run.promptOps();
+        });
+    });
+}
+
 
 function quit() {
     renderExitScreen();
