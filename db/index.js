@@ -90,19 +90,19 @@ function dbOperations(operation) {
             viewAllEmployees();
             break;
         case "Add a Department":
-            addDepartment();
+            addDepartment(operation);
             break;
         case "Add a Role":
-            addRole();
+            addRole(operation);
             break;
         case "Add an Employee":
             addEmployee(operation);
             break;
         case "Update an Employee's Role":
-            updateEmployeeRole();
+            updateEmployeeRole(operation);
             break;
         case "Update an Employee's Manager":
-            updateEmployeeManager();
+            updateEmployeeManager(operation);
             break;
         case "View Employees by Manager":
             viewEmployeesByManager();
@@ -111,13 +111,13 @@ function dbOperations(operation) {
             viewEmployeesByDepartment();
             break;
         case "Delete a Department":
-            deleteDepartment();
+            deleteDepartment(operation);
             break;
         case "Delete a Role":
-            deleteRole();
+            deleteRole(operation);
             break;
         case "Delete an Employee":
-            deleteEmployee();
+            deleteEmployee(operation);
             break;
         case "Quit":
             quit();
@@ -149,7 +149,7 @@ function viewAllEmployees() {
     });
 }
 
-function addDepartment() {
+function addDepartment(operation) {
     inquirer.prompt({
         name: "department",
         type: "input",
@@ -157,13 +157,14 @@ function addDepartment() {
     }).then(function (answer) {
         connection.query("INSERT INTO department (department_name) VALUES (?)", [answer.department], function (err, res) {
             if (err) throw err;
-            console.log("Department added successfully!");
+            let successMsg = `${answer.department} added to departments database.`;
+            logSuccessfulOperation(operation, successMsg);
             run.promptOps();
         });
     });
 }
 
-function addRole() {
+function addRole(operation) {
     inquirer.prompt([
         {
             type: "input",
@@ -182,9 +183,10 @@ function addRole() {
             choices: departmentSelection
         }
     ]).then(function (answer) {
-        connection.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [answer.role, answer.salary, answer.department], function (err, res) {
+        connection.query("INSERT INTO role (role_title, salary, department_id) VALUES (?, ?, ?)", [answer.role, answer.salary, answer.department], function (err, res) {
             if (err) throw err;
-            console.log("Role added successfully!");
+            let successMsg = `${answer.role} added to roles database.`;
+            logSuccessfulOperation(operation, successMsg);
             run.promptOps();
         });
     });
@@ -246,7 +248,8 @@ function updateEmployeeRole() {
     ]).then(function (answer) {
         connection.query("UPDATE employee SET role_id = ? WHERE id = ?", [answer.role, answer.employee], function (err, res) {
             if (err) throw err;
-            console.log("Employee role updated successfully!");
+            let successMsg = `${answer.employee}'s role has been updated to ${answer.role}.`;
+            logSuccessfulOperation(operation, successMsg);
             run.promptOps();
         });
     });
@@ -269,7 +272,8 @@ function updateEmployeeManager() {
     ]).then(function (answer) {
         connection.query("UPDATE employee SET manager_id = ? WHERE id = ?", [answer.manager, answer.employee], function (err, res) {
             if (err) throw err;
-            console.log("Employee manager updated successfully!");
+            let successMsg = `${answer.employee}'s manager has been updated to ${answer.manager}.`;
+            logSuccessfulOperation(operation, successMsg);
             run.promptOps();
         });
     });
