@@ -308,7 +308,7 @@ function addRole(operation) {
     ]).then(function (answer) {
         let departmentID = departmentSelection.indexOf(answer.department) + 1;
         
-        connection.query("INSERT INTO role (role_title, salary, department_id) VALUES (?, ?, ?)", [answer.role, answer.salary, departmentID], function (err, res) {
+        connection.query("INSERT INTO role (role_title, salary, department_id) VALUES (?, ?, (SELECT id FROM department WHERE department_name = ?))", [answer.role, answer.salary, answer.department], function (err, res) {
             if (err) throw err;
             let successMsg = `${answer.role} has been added to role database.`;
             logSuccessfulOperation(operation, successMsg);
@@ -344,10 +344,9 @@ function addEmployee(operation) {
             choices: managerSelection
         }
     ]).then(function (answer) {
-        let roleID = roleSelection.indexOf(answer.role) + 1;
-        let managerID = managerSelection.indexOf(answer.manager) + 1;
+        managerName = answer.manager.split(" ");
 
-        connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [answer.firstName, answer.lastName, roleID, managerID], function (err, res) {
+        connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, (SELECT r.id FROM role r WHERE r.role_title = ?), (SELECT e.id FROM employee e WHERE e.first_name = ? AND e.last_name = ?))", [answer.firstName, answer.lastName, answer.role, managerName[0], managerName[1]], function (err, res) {
             if (err) throw err;
             const successMsg = `${answer.firstName} ${answer.lastName} has been added to the database with the role of ${answer.role}.\n${answer.firstName} will report to ${answer.manager}.`;
             logSuccessfulOperation(operation, successMsg);
