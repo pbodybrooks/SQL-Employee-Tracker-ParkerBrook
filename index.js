@@ -9,6 +9,13 @@ const userPrompts = [
         type: 'list',
         name: 'userChoice',
         message: 'What would you like to do?',
+        choices: [
+            "View",
+            "Add",
+            "Update",
+            "Delete",
+            "Quit"
+        ]
         // choices: [
         //     "View All Departments",
         //     "View All Roles",
@@ -25,13 +32,7 @@ const userPrompts = [
         //     "Delete an Employee",
         //     "Quit"
         // ]
-        choices: [
-            "View",
-            "Add",
-            "Update",
-            "Delete",
-            "Quit"
-        ]
+        
     }
 ];
 

@@ -5,10 +5,6 @@ const logo = require('asciiart-logo');
 const connection = require("../config/connection");
 const consoleTable = require("console.table");
 
-// TEST CONNECTION
-// const connection = require('./config/connection.js');
-// connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) { if (error) throw error; console.log('The solution is: ', results[0].solution); });
-
 let departmentSelection = [];
 let roleSelection = [];
 let employeeSelection = [];
@@ -45,47 +41,34 @@ function fillSelectionArrays() {
         const uniqueManagers = new Set(res.map(item => item.first_name + " " + item.last_name));
         managerSelection = [...uniqueManagers];
     });
-    // console.log(departmentSelection);
-    // console.log(roleSelection);
-    // console.log(employeeSelection);
-    // console.log(managerSelection);
-
-       // connection.query("SELECT * FROM department", function (err, res) {
-    //     if (err) throw err;
-    //     for (let i = 0; i < res.length; i++) {
-    //         departmentSelection.push(res[i].department_name);
-    //     }
-    // });
-    // connection.query("SELECT * FROM role", function (err, res) {
-    //     if (err) throw err;
-    //     for (let i = 0; i < res.length; i++) {
-    //         roleSelection.push(res[i].role_title);
-    //     }
-    // });
-    // connection.query("SELECT * FROM employee", function (err, res) {
-    //     if (err) throw err;
-    //     for (let i = 0; i < res.length; i++) {
-    //         employeeSelection.push(res[i].first_name + " " + res[i].last_name);
-    //     }
-    // });
-    // connection.query("SELECT * FROM employee WHERE manager_id IS NULL", function (err, res) {
-    //     if (err) throw err;
-    //     for (let i = 0; i < res.length; i++) {
-    //         managerSelection.push(res[i].first_name + " " + res[i].last_name);
-    //     }
-    // });
 }
 
 function quitPrompt(input) {
     if (input.toLowerCase() === 'quit') {
-        // Exit the program if 'quit' is entered
+        // exit the program if 'quit' is entered
         process.exit();
     }
-    // Continue with the prompt
     return true;
 }
 
 function dbOperations(operation) {
+    switch (operation) {
+        case "View":
+            viewOperations();
+            break;
+        case "Add":
+            addOperations(operation);
+            break;
+        case "Update":
+            updateOperations(operation);
+            break;
+        case "Delete":
+            deleteOperations(operation);
+            break;
+        case "Quit":
+            quit();
+            break;
+    }
     // switch (operation) {
     //     case "View All Departments":
     //         viewAllDepartments();
@@ -130,24 +113,6 @@ function dbOperations(operation) {
     //         quit();
     //         break;
     // }
-
-    switch (operation) {
-        case "View":
-            viewOperations();
-            break;
-        case "Add":
-            addOperations(operation);
-            break;
-        case "Update":
-            updateOperations(operation);
-            break;
-        case "Delete":
-            deleteOperations(operation);
-            break;
-        case "Quit":
-            quit();
-            break;
-    }
 }
 
 function viewOperations() {
@@ -277,7 +242,8 @@ function addDepartment(operation) {
     inquirer.prompt({
         name: "department",
         type: "input",
-        message: "Please enter the name of the department you wish to add:"
+        message: "Please enter the name of the department you wish to add. [Enter 'quit' to exit]",
+        validate: (input) => quitPrompt(input)
     }).then(function (answer) {
         connection.query("INSERT INTO department (department_name) VALUES (?)", [answer.department], function (err, res) {
             if (err) throw err;
@@ -305,9 +271,8 @@ function addRole(operation) {
         {
             type: "list",
             name: "department",
-            message: "Please enter the department ID for this role. [Enter 'quit' to exit]",
-            choices: departmentSelection,
-            validate: (input) => quitPrompt(input)
+            message: "Please enter the department ID for this role.",
+            choices: departmentSelection
         }
     ]).then(function (answer) {
         connection.query("INSERT INTO role (role_title, salary, department_id) VALUES (?, ?, ?)", [answer.role, answer.salary, answer.department], function (err, res) {
@@ -324,23 +289,25 @@ function addEmployee(operation) {
         {
             type: "input",
             name: "firstName",
-            message: "Please enter the employee's first name:"
+            message: "Please enter the employee's first name. [Enter 'quit' to exit]",
+            validate: (input) => quitPrompt(input)
         },
         {
             type: "input",
             name: "lastName",
-            message: "Please enter the employee's last name:"
+            message: "Please enter the employee's last name. [Enter 'quit' to exit]",
+            validate: (input) => quitPrompt(input)
         },
         {
             type: "list",
             name: "role",
-            message: "Please select the role for this employee:",
+            message: "Please select the role for this employee.",
             choices: roleSelection
         },
         {
             type: "list",
             name: "manager",
-            message: "Please select the name of the manager this employee will report to:",
+            message: "Please select the manager this employee will report to:",
             choices: managerSelection
         }
     ]).then(function (answer) {
@@ -351,7 +318,6 @@ function addEmployee(operation) {
             if (err) throw err;
             const successMsg = `${answer.firstName} ${answer.lastName} has been added to the database with the role of ${answer.role}.\n${answer.firstName} will report to ${answer.manager}.`;
             logSuccessfulOperation(operation, successMsg);
-            // fillSelectionArrays();
             run.promptOps();
         });
     });
