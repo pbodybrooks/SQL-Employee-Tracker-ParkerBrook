@@ -16,6 +16,12 @@ function logSuccessfulOperation(operation, successMsg) {
     }
 }
 
+function organizeView(view, res) {
+    console.log('\x1b[32;1m%s\x1b[0m', `\n//////////////////////////////// Viewing ${view} ////////////////////////////////\n`);
+    console.table(res);
+    console.log('\x1b[32;1m%s\x1b[0m', `//////////////////////////////// Viewing ${view} ////////////////////////////////\n\n`);
+}
+
 // fill the selection arrays from the database
 function fillSelectionArrays() {
     connection.query("SELECT * FROM department", function (err, res) {
@@ -215,28 +221,53 @@ function deleteOperations(operation) {
 }
 
 function viewAllDepartments() {
+    let view = "all departments";
     connection.query("SELECT * FROM department", function (err, res) {
         if (err) throw err;
-        console.table(res);
+        organizeView(view, res);
         run.promptOps();
     });
 }
 
 function viewAllRoles() {
-    connection.query("SELECT * FROM role", function (err, res) {
+    let view = "all roles";
+    connection.query(`SELECT 
+    role.id AS role_id, 
+    role.role_title, 
+    role.salary, 
+    department.department_name 
+    FROM role 
+    JOIN department 
+    ON role.department_id = department.id`, 
+    function (err, res) {
         if (err) throw err;
-        console.table(res);
+        organizeView(view, res);
         run.promptOps();
     });
 }
 
 function viewAllEmployees() {
-    connection.query("SELECT * FROM employee", function (err, res) {
+    let view = "all employees";
+    connection.query(`SELECT 
+    a.id AS employee_id,
+    a.first_name,
+    a.last_name, 
+    c.role_title,
+    d.department_name,
+    c.salary,
+    b.first_name AS manager_first_name,
+    b.last_name AS manager_last_name
+    FROM employee a
+    LEFT JOIN employee b ON a.manager_id = b.id
+    INNER JOIN role c ON a.role_id = c.id
+    INNER JOIN department d ON d.id = c.department_id;`,
+    function (err, res) {
         if (err) throw err;
-        console.table(res);
+        organizeView(view, res);
         run.promptOps();
     });
 }
+
 
 function addDepartment(operation) {
     inquirer.prompt({
@@ -271,11 +302,13 @@ function addRole(operation) {
         {
             type: "list",
             name: "department",
-            message: "Please enter the department ID for this role.",
+            message: "Please enter the department for this role.",
             choices: departmentSelection
         }
     ]).then(function (answer) {
-        connection.query("INSERT INTO role (role_title, salary, department_id) VALUES (?, ?, ?)", [answer.role, answer.salary, answer.department], function (err, res) {
+        let departmentID = departmentSelection.indexOf(answer.department) + 1;
+        
+        connection.query("INSERT INTO role (role_title, salary, department_id) VALUES (?, ?, ?)", [answer.role, answer.salary, departmentID], function (err, res) {
             if (err) throw err;
             let successMsg = `${answer.role} has been added to role database.`;
             logSuccessfulOperation(operation, successMsg);
@@ -311,8 +344,8 @@ function addEmployee(operation) {
             choices: managerSelection
         }
     ]).then(function (answer) {
-        roleID = roleSelection.indexOf(answer.role) + 1;
-        managerID = managerSelection.indexOf(answer.manager) + 1;
+        let roleID = roleSelection.indexOf(answer.role) + 1;
+        let managerID = managerSelection.indexOf(answer.manager) + 1;
 
         connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [answer.firstName, answer.lastName, roleID, managerID], function (err, res) {
             if (err) throw err;
@@ -372,17 +405,18 @@ function updateEmployeeManager(operation) {
 }
 
 function viewEmployeesByManager() {
+    
     inquirer.prompt({
         name: "manager",
         type: "list",
         message: "Please select the manager whose direct reports you wish to view:",
         choices: managerSelection
     }).then(function (answer) {
+        let view = "employees by manager";
         managerID = managerSelection.indexOf(answer.manager) + 1;
-
         connection.query("SELECT * FROM employee WHERE manager_id = ?", [managerID], function (err, res) {
             if (err) throw err;
-            console.table(res);
+            organizeView(view, res);
             run.promptOps();
         });
     });
@@ -395,11 +429,11 @@ function viewEmployeesByDepartment() {
         message: "Please select the department in which you wish to view employees:",
         choices: departmentSelection
     }).then(function (answer) {
+        let view = "employees by department";
         departmentID = departmentSelection.indexOf(answer.department) + 1;
-
         connection.query("SELECT * FROM employee WHERE department_id = ?", [departmentID], function (err, res) {
             if (err) throw err;
-            console.table(res);
+            organizeView(view, res);
             run.promptOps();
         });
     });

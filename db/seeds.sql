@@ -89,3 +89,4 @@ VALUES ("Safaa", "Lamb", 1, 3),
        ("Daisy", "Patterson", 36, 38),
        ("Max", "Lopez", 37, 38),
        ("Avery", "Lynch", 38, NULL);
+

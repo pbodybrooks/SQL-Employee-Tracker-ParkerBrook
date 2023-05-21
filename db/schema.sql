@@ -28,6 +28,7 @@ CREATE TABLE employee (
     ON DELETE SET NULL
 );
 
+
 SHOW TABLES;
 
 SELECT "department" AS "Table";
