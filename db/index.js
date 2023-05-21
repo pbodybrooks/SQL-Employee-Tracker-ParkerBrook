@@ -14,7 +14,9 @@ let managerSelection = [];
 // create a dynamic success message for each operation
 function logSuccessfulOperation(operation, successMsg) {
     if (operation !== "Quit" || "View All Departments" || "View All Roles" || "View All Employees" || "View Employees by Manager" || "View Employees by Department") {
-        console.log('\x1b[32;1m%s\x1b[0m', `\n//////////////////////////////// Operation "${operation}" was completed successfully. ////////////////////////////////\n\n${successMsg}\n\n//////////////////////////////// Operation "${operation}" was completed successfully. ////////////////////////////////\n`);
+        console.log('\x1b[32;1m%s\x1b[0m', `\n//////////////////////////////// Operation "${operation}" was completed successfully. ////////////////////////////////\n`);
+        console.log(`\n${successMsg}`);
+        console.log('\x1b[32;1m%s\x1b[0m', `\n//////////////////////////////// Operation "${operation}" was completed successfully. ////////////////////////////////\n\n`);
     }
 }
 
