@@ -4,6 +4,7 @@ const logo = require('asciiart-logo');
 const { dbOperations, fillSelectionArrays } = require('./db/index');
 
 // prompts for user to select a database action
+// for a better user experience, database operations have been split up by their respective actions (view, add, update, delete)
 const userPrompts = [
     {
         type: 'list',
