@@ -15,7 +15,7 @@ This application is an employee management system (EMS) that allows company admi
 * [Questions](#questions)
 
 ## Video Demonstration
-[Link to video demonstration](https://drive.google.com/file/d/11A9l32Ha0ymNBk8zuMmT9PdSglLx7T04/view)
+[Link to video demonstration](https://drive.google.com/file/d/11-MckS0ouddvVvNC5obYTVh347DcRvnr/view)
 
 ## Screenshot
 ![Screenshot of app.](assets/images/screenshot.png)
